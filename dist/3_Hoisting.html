@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Scope</title>
+    <link rel="stylesheet" href="../style/markdown.css">
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/dracula.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+    <h1 id="chapter-2-">Chapter 2. 函数作用域 &amp; 块级作用域</h1>
+<h2 id="-">函数作用域</h2>
+<p>JS中的函数具有词法作用域：函数外部无法访问内部变量，函数内部的任何位置都可以使用内部变量（包括内嵌的函数），这会带来一些<strong>副作用</strong>。</p>
+<h3 id="1-">1. 隐藏内部实现</h3>
+<p>外部无法访问函数内部变量，换言之，可以将变量或函数隐藏在函数作用域中。这样做符合软件设计原则<strong>最小暴露原则</strong>。</p>
+<p>举个栗子：</p>
+<pre><code class="lang-javascript">function doSomething(a) {
+    b = a + doSomethingElse( a * 2 );
+
+    console.log( b * 3 );
+}
+
+function doSomethingElse(a) {
+    return a - 1;
+}
+
+var b;
+
+doSomething( 2 ); // 15
+</code></pre>
+<p>如果不想让别人使用或者看到<code>b</code>, <code>doSomethingElse()</code>，那么可以改变其位置，将其隐藏：</p>
+<pre><code class="lang-javascript">function doSomething(a) {
+    var b;
+
+    function doSomethingElse(a) {
+        return a - 1;
+    }
+
+    b = a + doSomethingElse( a * 2 );
+
+    console.log( b * 3 );
+}
+
+doSomething( 2 ); // 15
+</code></pre>
+<h3 id="2-">2. 避免冲突</h3>
+<p>主要有两种方式：</p>
+<h4 id="2-1-">2.1 命名空间</h4>
+<p>根据功能、类型或者作者不同，分为命名空间，说白了就是把同类的属性方法放在一个全局对象上，避免与其他同名。</p>
+<p>举个栗子：</p>
+<pre><code class="lang-javascript">var MyReallyCoolLibrary = {
+    awesome: &quot;stuff&quot;,
+    doSomething: function() {
+        // ...
+    },
+    doAnotherThing: function() {
+        // ...
+    }
+};
+</code></pre>
+<h4 id="2-2-">2.2 模块管理</h4>
+<p>讲JS代码分为一个一个的模块（js文件），通过模块管理器来使用它们。</p>
+<h3 id="-">立即执行函数</h3>
+<p>使用刚才介绍的函数作用域隐藏作用域的话，需要先声明再调用，这是不必要的。可以使用立即执行函数（IIFE）来实现：</p>
+<pre><code class="lang-javascript">(function foo(){ // &lt;-- function左边加(
+
+    var a = 3;
+    console.log( a ); // 3
+
+})(); // &lt;-- 最后加)();
+</code></pre>
+<p>用<code>()</code>将函数声明包裹起来，就会将函数声明变为函数表达式，最后再添加<code>()</code>则会立即执行该函数表达式。</p>
+<p><strong>注意</strong>：区分函数表达式和函数声明只需要确定：<code>function</code>关键字是不是在语句的句首，如果在就是函数声明；如果不在就是函数表达式</p>
+<p>立即执行函数还可以传入参数，通常确保全局对象和<code>undifined</code>的正确性。（<code>undifined</code>可以被修改）</p>
+<pre><code class="lang-javascript">var foo = &#39;global&#39;;
+var undifined = &#39;defined&#39;; // 重定义undifined
+
+(function IIFE(global, undifined){ // &lt;-- function左边加(
+
+    var foo = &#39;local&#39;;
+    console.log( foo ); // &quot;local&quot;
+    console.log( global.foo ); // &quot;global&quot;
+    console.log( undifined ); // undifined，无视全局修改undifined
+
+})(window); // 第一个实参window，第二个实参为空(传入为空时，形参为undifined)
+
+console.log(undifined); // &quot;defined&quot;
+</code></pre>
+<p>另外一种立即执行函数的范式成为UMD，通用模块定义。然而个人认为并没有什么优点。&#128514;</p>
+<p>将工厂函数作为实参传入IIFE</p>
+<pre><code class="lang-javascript">var a = 2;
+
+(function IIFE( def ){
+    def( window );
+})(function def( global ){
+
+    var a = 3;
+    console.log( a ); // 3
+    console.log( global.a ); // 2
+
+});
+</code></pre>
+<h3 id="-">匿名函数</h3>
+<p>JS中经常需要将函数作为参数或返回值，通常会采用匿名函数的做法，比如：</p>
+<pre><code class="lang-javascript">setTimeout( function(){
+    console.log(&quot;I waited 1 second!&quot;);
+}, 1000 );
+</code></pre>
+<p>这样做可以省点时间对函数取名，但是：</p>
+<ol>
+<li>匿名函数在函数的调用栈中不明显，可能会导致调试更加困难。</li>
+<li>递归调用不太方便（可以使用<code>arguments.callee</code>，但是这是将要废弃的API，最好不要用）</li>
+<li>取一个有意义的名字可以更快的理解函数中语句的意义。</li>
+</ol>
+<p>所以最佳实践是：始终对函数取名。</p>
+<pre><code class="lang-javascript">setTimeout( function timeoutHandler(){ // &lt;-- 看！我有名字了
+    console.log( &quot;I waited 1 second!&quot; );
+}, 1000 );
+</code></pre>
+<h2 id="-">块级作用域</h2>
+<p>恩，我知道你想说什么，JS并没有什么块级作用域。因此对于<code>if</code>、<code>for</code>之类的，把变量定义在<code>{}</code>内，在整个函数作用域依然可以访问到。</p>
+<p>但是，JS除了函数作用域，就没有办法产生作用域了么？</p>
+<p>显然我这么问，答案就是有的：</p>
+<h3 id="1-with-">1. <code>with</code></h3>
+<p>之前讨论过这个玩意，相当于在当前作用域链的最前端，加上指定的对象，看起来貌似延长了作用域链。还是那句话：尽可能的不要用。</p>
+<h3 id="2-try-catch-">2. <code>try/catch</code></h3>
+<p>在ES3的规定中：<code>try/catch</code>会创建<code>catch</code>的块级作用域，且传入的参数只存在于该块级作用域。</p>
+<h3 id="3-let-const-">3. <code>let/const</code></h3>
+<p>这个ES6中的声明变量方式，这样JS就有块级作用域了。就是像其他语言一样，<code>let/const</code>声明的变量只在当前的块级作用域下存在</p>
+<h2 id="-">总结</h2>
+<ul>
+<li>JS中最普遍的作用域是函数作用域，除此之外还有<code>with</code>、<code>try/catch</code>、<code>let/const</code>(ES6新增)带来的块级作用域</li>
+<li>函数作用域可以用来：隐藏内部实现、避免冲突。</li>
+<li>可以使用IIFE来更简便的创建函数作用域，并且最好对匿名函数添加函数名。</li>
+</ul>
+
+    <script >hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

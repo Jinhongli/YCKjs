@@ -10,9 +10,11 @@ fs.readFile('./template.hbs', 'utf8', function(err, template){
         if (err) throw err;
         var fileExtension = '';
         var fileName = '';
+        var completeLog = '';
         console.log('\n ' + chalk.yellow(files.length) + ' files found.');
         console.log('-----------------------------');
         for (var i=0; i<files.length; i++) {
+            var count = 0;
             fileName = files[i].substr(0, files[i].lastIndexOf('.'));
             fileExtension = files[i].substr(files[i].lastIndexOf('.')+1);
             console.log(' ' + chalk.blue(i) + ': ' + files[i]);
@@ -25,11 +27,15 @@ fs.readFile('./template.hbs', 'utf8', function(err, template){
                 var html = compile(data);
                 fs.writeFile('./dist/' + fileName + '.html', html, 'utf8', function(err) {
                     if (err) throw err;
-                    if (i === files.length) console.log(chalk.green('\n complete!'));
-                })
-            })
-
-
+                    count++;
+                    if (count === files.length) {
+                        completeLog += '. complete!';
+                        console.log(chalk.green(completeLog))
+                    } else {
+                        completeLog += '.';
+                    }
+                });
+            });
         }
     })
 
