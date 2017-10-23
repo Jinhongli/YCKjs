@@ -26,7 +26,7 @@ var b;
 doSomething( 2 ); // 15
 ```
 
-如果不想让别人使用或者看到`b`, `doSomethingElse()`，那么可以改变其位置，将其隐藏：
+如果不想让别人使用或者看到`b`, `doSomethingElse()`，那么可以写在函数内，将其隐藏：
 
 ```javascript
 function doSomething(a) {
@@ -105,7 +105,7 @@ var undifined = 'defined'; // 重定义undifined
 console.log(undifined); // "defined"
 ```
 
-另外一种立即执行函数的范式成为UMD，通用模块定义。然而个人认为并没有什么优点。&#128514;
+另外一种立即执行函数的范式成为UMD，通用模块定义。然而个人认为并没有什么优点。😅
 
 将工厂函数作为实参传入IIFE
 
