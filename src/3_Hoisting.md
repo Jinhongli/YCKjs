@@ -8,10 +8,8 @@
 
 ```javascript
 foo();
-
 function foo() {
 	console.log( a ); // undefined
-
 	var a = 2;
 }
 ```
@@ -27,9 +25,7 @@ function foo() {
 function foo() {
     // a 被提前
     var a;
-
 	console.log( a ); // undefined
-
 	a = 2;
 }
 
@@ -54,9 +50,7 @@ var foo = function bar() {
 
 ```javascript
 foo(); // 1
-
 var foo;
-
 function foo() {
 	console.log( 1 );
 }
@@ -72,9 +66,7 @@ JS引擎看到这烂代码之后，一边吐槽一边依然进行变量提升：
 function foo() {
 	console.log( 1 );
 }
-
 foo(); // 1
-
 foo = function() {
 	console.log( 2 );
 };
@@ -86,15 +78,12 @@ foo = function() {
 
 ```javascript
 foo(); // 3
-
 function foo() {
 	console.log( 1 );
 }
-
 var foo = function() {
 	console.log( 2 );
 };
-
 function foo() {
 	console.log( 3 );
 }
@@ -106,9 +95,7 @@ function foo() {
 function foo() {
 	console.log( 3 );
 }
-
 foo(); // 3
-
 foo = function() {
 	console.log( 2 );
 };

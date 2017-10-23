@@ -13,14 +13,11 @@ JS中的函数具有词法作用域：函数外部无法访问内部变量，函
 ```javascript
 function doSomething(a) {
 	b = a + doSomethingElse( a * 2 );
-
 	console.log( b * 3 );
 }
-
 function doSomethingElse(a) {
 	return a - 1;
 }
-
 var b;
 
 doSomething( 2 ); // 15
@@ -31,16 +28,12 @@ doSomething( 2 ); // 15
 ```javascript
 function doSomething(a) {
     var b;
-
     function doSomethingElse(a) {
     	return a - 1;
     }
-
 	b = a + doSomethingElse( a * 2 );
-
 	console.log( b * 3 );
 }
-
 doSomething( 2 ); // 15
 ```
 
@@ -76,7 +69,6 @@ var MyReallyCoolLibrary = {
 
 ```javascript
 (function foo(){ // <-- function左边加(
-
 	var a = 3;
 	console.log( a ); // 3
 
@@ -92,16 +84,13 @@ var MyReallyCoolLibrary = {
 ```javascript
 var foo = 'global';
 var undifined = 'defined'; // 重定义undifined
-
 (function IIFE(global, undifined){ // <-- function左边加(
-
 	var foo = 'local';
     console.log( foo ); // "local"
     console.log( global.foo ); // "global"
 	console.log( undifined ); // undifined，无视全局修改undifined
 
 })(window); // 第一个实参window，第二个实参为空(传入为空时，形参为undifined)
-
 console.log(undifined); // "defined"
 ```
 
@@ -111,11 +100,9 @@ console.log(undifined); // "defined"
 
 ```javascript
 var a = 2;
-
 (function IIFE( def ){
 	def( window );
 })(function def( global ){
-
 	var a = 3;
 	console.log( a ); // 3
 	console.log( global.a ); // 2
