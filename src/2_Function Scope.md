@@ -160,3 +160,20 @@ setTimeout( function timeoutHandler(){ // <-- 看！我有名字了
 - JS中最普遍的作用域是函数作用域，除此之外还有`with`、`try/catch`、`let/const`(ES6新增)带来的块级作用域
 - 函数作用域可以用来：隐藏内部实现、避免冲突。
 - 可以使用IIFE来更简便的创建函数作用域，并且最好对匿名函数添加函数名。
+
+### 小测验
+
+```javascript
+var a = 1;
+var b = 1;
+function foo(b) {
+    console.log(a + b);
+}
+(function(b){
+    var a = 2;
+    var b = 2;
+    foo(b);
+})(b);
+```
+
+1. 这段代码会输出什么?

@@ -110,8 +110,46 @@ foo.printData(); // "data"
 
 ## 总结
 
-闭包就是函数执行结束之后，仍然能够访问其词法作用域的机制。
+- 闭包就是函数执行结束之后，仍然能够访问其词法作用域的机制。
+- 闭包产生的方法：函数的返回值（对象或函数）包含对函数内部变量的引用。
+- 闭包可以用来：
+    + 保存执行环境
+    + 封装（模块开发模式）
 
-闭包可以用来：
-- 保存执行环境
-- 封装（模块开发模式）
+### 小测验
+
+```javascript
+var Zoo = (function ZooFactory() {
+    var animals = [];
+
+    function add(breed, name, voice) {
+        var newAnimal = {
+            breed: breed,
+            name: name,
+            voice: voice
+        }
+        animals.push(newAnimal);
+        console.log(breed + '(' + name +') added.');
+    }
+
+    function kill(breed, name) {
+        animals.forEach(function(animal, index){
+            if (animal.name === name && animal.breed === breed) {
+                animals.splice(index, 1);
+                console.log(animal.breed + '(' + animal.name +') is dead.');
+                return true;
+            }
+        });
+        console.error(animal.breed + '(' + animal.name +') not found!');
+        return false;
+    }
+
+    return {
+        add: add,
+        kill: kill
+    }
+})();
+```
+
+1. 在上面代码的基础上，添加一个神秘的管理员（没有人知道这个管理员是谁，持有**创建**这个动物园的老板知道）
+2. 在`Zoo`上面添加一个方法，可以打印出所有的动物名单。结果如下：` "3 animals in the zoo: XXX, YYY, ZZZ. --- Andrew `（包括动物个数、动物名称、管理员名字）
