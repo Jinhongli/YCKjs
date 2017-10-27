@@ -11,23 +11,22 @@ fs.mkdir('./dist/', function(){
             if (err) throw err;
             console.log('\n ' + chalk.yellow(files.length) + ' files found.');
             console.log('-----------------------------');
+            var j = 0;
             for (var i=0; i<files.length; i++) {
                 (function IIFE(i){
-                    // fileName = files[i].substr(0, files[i].lastIndexOf('.'));
+                    fileName = files[i].substr(0, files[i].lastIndexOf('.'));
                     // fileExtension = files[i].substr(files[i].lastIndexOf('.')+1);
                     console.log(' ' + chalk.blue(i) + ': ' + files[i]);
                     fs.readFile('./src/' + files[i], 'utf8', function(err, md){
                         if (err) throw err;
                         var data = {
-                            title: 'Scope',
+                            title: fileName,
                             md: marked(md)
                         }
                         var html = compile(data);
-                        fs.writeFile('./dist/' + files[i].substr(0, files[i].lastIndexOf('.')) + '.html', html, 'utf8', function(err) {
-                            console.log(i)
-                            if (err) {
-                                throw err;
-                            }
+                        fs.writeFile('./dist/' + fileName + '.html', html, 'utf8', function(err) {
+                            if (err) throw err;
+                            if (++j === files.length) console.log(chalk.green('complete!'))
                         });
                     });
                 })(i);
