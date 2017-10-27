@@ -132,24 +132,11 @@ var Zoo = (function ZooFactory() {
         console.log(breed + '(' + name +') added.');
     }
 
-    function kill(breed, name) {
-        animals.forEach(function(animal, index){
-            if (animal.name === name && animal.breed === breed) {
-                animals.splice(index, 1);
-                console.log(animal.breed + '(' + animal.name +') is dead.');
-                return true;
-            }
-        });
-        console.error(animal.breed + '(' + animal.name +') not found!');
-        return false;
-    }
-
     return {
-        add: add,
-        kill: kill
+        add: add
     }
 })();
 ```
 
-1. 在上面代码的基础上，添加一个神秘的管理员（没有人知道这个管理员是谁，持有**创建**这个动物园的老板知道）
-2. 在`Zoo`上面添加一个方法，可以打印出所有的动物名单。结果如下：` "3 animals in the zoo: XXX, YYY, ZZZ. --- Andrew `（包括动物个数、动物名称、管理员名字）
+1. 在上面代码的基础上，添加一个神秘的管理员（没有人知道这个管理员是谁，只有**创建**这个动物园的老板知道）。
+2. 在`Zoo`上面添加一个方法，可以让管理员对动物进行点名，点名后会输出：` "Andrew(管理员名字) say: "Tom(动物名称)!", "XIA(动物叫声)!" `。
